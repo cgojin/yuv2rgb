@@ -3,7 +3,9 @@
 
 #include "yuv_rgb.h"
 
+#if defined(__x86_64__)
 #include <emmintrin.h>
+#endif
 
 #ifdef _MSC_VER
 // MSVC does not have __SSE2__ macro

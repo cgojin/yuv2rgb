@@ -11,7 +11,12 @@
 #include <string.h>
 #include <time.h>
 
+#if defined(__x86_64__)
 #include <x86intrin.h>
+#else
+#define _mm_malloc(a, b) malloc(a)
+#define _mm_free(a) free(a)
+#endif
 
 #if USE_FFMPEG
 #include <libswscale/swscale.h>
@@ -460,8 +465,10 @@ int main(int argc, char **argv)
 		{
 			test_yuv2rgb(width, height, Y, U, V, width, (width+1)/2, RGB, width*3, yuv_format, 
 				out, "std", iteration_number, yuv420_rgb24_std);
+#ifdef _YUVRGB_SSE2_
 			test_yuv2rgb(width, height, Y, U, V, width, (width+1)/2, RGB, width*3, yuv_format, 
 				out, "sse2_unaligned", iteration_number, yuv420_rgb24_sseu);
+#endif
 #if USE_FFMPEG
 			test_yuv2rgb(width, height, Y, U, V, width, (width+1)/2, RGB, width*3, yuv_format, 
 				out, "ffmpeg_unaligned", iteration_number, yuv420_rgb24_ffmpeg);
@@ -470,8 +477,10 @@ int main(int argc, char **argv)
 			test_yuv2rgb(width, height, Y, U, V, width, (width+1)/2, RGB, width*3, yuv_format, 
 				out, "ipp_unaligned", iteration_number, yuv420_rgb24_ipp);
 #endif
+#ifdef _YUVRGB_SSE2_
 			test_yuv2rgb(width, height, Ya, Ua, Va, y_stride, uv_stride, RGBa, rgb_stride, yuv_format, 
 				out, "sse2_aligned", iteration_number, yuv420_rgb24_sse);
+#endif
 #if USE_FFMPEG
 			test_yuv2rgb(width, height, Ya, Ua, Va, y_stride, uv_stride, RGBa, rgb_stride, yuv_format, 
 				out, "ffmpeg_aligned", iteration_number, yuv420_rgb24_ffmpeg);
@@ -485,19 +494,23 @@ int main(int argc, char **argv)
 		{
 			test_yuvsp2rgb(width, height, Y, U, width, width, RGB, width*3, yuv_format, 
 				out, "std", iteration_number, nv12_rgb24_std);
+#ifdef _YUVRGB_SSE2_
 			test_yuvsp2rgb(width, height, Y, U, width, width, RGB, width*3, yuv_format, 
 				out, "sse2_unaligned", iteration_number, nv12_rgb24_sseu);
 			test_yuvsp2rgb(width, height, Ya, Ua, y_stride, uv_stride, RGBa, rgb_stride, yuv_format, 
 				out, "sse2_aligned", iteration_number, nv12_rgb24_sse);
+#endif
 		}
 		else if(mode==YUV2RGB_NV21)
 		{
 			test_yuvsp2rgb(width, height, Y, U, width, width, RGB, width*3, yuv_format, 
 				out, "std", iteration_number, nv21_rgb24_std);
+#ifdef _YUVRGB_SSE2_
 			test_yuvsp2rgb(width, height, Y, U, width, width, RGB, width*3, yuv_format, 
 				out, "sse2_unaligned", iteration_number, nv21_rgb24_sseu);
 			test_yuvsp2rgb(width, height, Ya, Ua, y_stride, uv_stride, RGBa, rgb_stride, yuv_format, 
 				out, "sse2_aligned", iteration_number, nv21_rgb24_sse);
+#endif
 		}
 	}
 	else if(mode==RGB2YUV)
@@ -543,8 +556,10 @@ int main(int argc, char **argv)
 		// test all versions
 		test_rgb2yuv(width, height, RGB, width*3, Y, U, V, width, (width+1)/2, yuv_format, 
 			out, "std", iteration_number, rgb24_yuv420_std);
+#ifdef _YUVRGB_SSE2_
 		test_rgb2yuv(width, height, RGB, width*3, Y, U, V, width, (width+1)/2, yuv_format, 
 			out, "sse2_unaligned", iteration_number, rgb24_yuv420_sseu);
+#endif
 #if USE_FFMPEG
 		test_rgb2yuv(width, height, RGB, width*3, Y, U, V, width, (width+1)/2, yuv_format, 
 			out, "ffmpeg_unaligned", iteration_number, rgb24_yuv420_ffmpeg);
@@ -553,8 +568,10 @@ int main(int argc, char **argv)
 		test_rgb2yuv(width, height, RGB, width*3, Y, U, V, width, (width+1)/2, yuv_format, 
 			out, "ipp_unaligned", iteration_number, rgb24_yuv420_ipp);
 #endif
+#ifdef _YUVRGB_SSE2_
 		test_rgb2yuv(width, height, RGBa, rgb_stride, Ya, Ua, Va, y_stride, uv_stride, yuv_format, 
 			out, "sse2_aligned", iteration_number, rgb24_yuv420_sse);
+#endif
 #if USE_FFMPEG
 		test_rgb2yuv(width, height, RGBa, rgb_stride, Ya, Ua, Va, y_stride, uv_stride, yuv_format, 
 			out, "ffmpeg_aligned", iteration_number, rgb24_yuv420_ffmpeg);
@@ -605,10 +622,12 @@ int main(int argc, char **argv)
 		// test all versions
 		test_rgb2yuv(width, height, RGBA, width*4, Y, U, V, width, (width+1)/2, yuv_format, 
 			out, "std", iteration_number, rgb32_yuv420_std);
+#ifdef _YUVRGB_SSE2_
 		test_rgb2yuv(width, height, RGBA, width*4, Y, U, V, width, (width+1)/2, yuv_format, 
 			out, "sse2_unaligned", iteration_number, rgb32_yuv420_sseu);
 		test_rgb2yuv(width, height, RGBa, rgba_stride, Ya, Ua, Va, y_stride, uv_stride, yuv_format, 
 			out, "sse2_aligned", iteration_number, rgb32_yuv420_sse);
+#endif
 		
 		free(RGBA);
 	}
