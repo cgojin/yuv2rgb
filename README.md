@@ -1,4 +1,5 @@
 # yuv2rgb
+
 C library for fast image conversion between yuv420p and rgb24.
 
 This is a simple library for optimized image conversion between YUV420p and rgb24.
@@ -13,29 +14,61 @@ Optionnaly, it also compares the result and computation time with the ffmpeg imp
 
 To compile, simply do :
 
-    mkdir build
-    cd build
-    cmake -DCMAKE_BUILD_TYPE=Release ..
-    make
+```sh
+mkdir build
+cd build
+
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+```
+
+Build with ffmpeg :
+
+```sh
+# Install ffmpeg library first on macOS 
+brew install ffmpeg
+
+# Build debug version with ffmpeg
+cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_FFMPEG=true  ..
+make
+```
+
 
 The test program only support raw YUV files for the YUV420 format, and ppm for the RGB24 format.
-To generate a raw yuv file, you can use avconv:
+To generate a raw yuv file, you can use ffmpeg:
 
-    avconv -i example.jpg -c:v rawvideo -pix_fmt yuv420p example.yuv
+```sh
+ffmpeg -i example.jpg -c:v rawvideo -pix_fmt yuv420p example.yuv
+```
 
-To generate the rgb file, you can use the ImageMagick convert program:
+To generate the rgb file, you can use the ffmpeg convert program:
 
-    convert example.jpg example.ppm
+```sh
+ffmpeg -i example.jpg example.ppm
+```
+
+Or use ImageMagick convert program:
+
+```sh
+# Install ImageMagick first on macOS
+brew install imagemagick
+
+convert example.jpg example.ppm
+```
 
 Then, for YUV420 to RGB24 conversion, use the test program like that:
 
-    ./test_yuv_rgb yuv2rgb image.yuv 4096 2160 image
+```sh
+./test_yuv_rgb yuv2rgb example.yuv 80 70 out
+```
   
 The second and third parameters are image width and height (that are needed because not available in the raw YUV file), and fourth parameter is the output filename template (several output files will be generated, named for example output_sse.ppm, output_av.ppm, etc.)
 
 Similarly, for RGB24 to YUV420 conversion:
 
-    ./test_yuv_rgb rgb2yuv image.ppm image
+```sh
+./test_yuv_rgb rgb2yuv example.ppm out
+```
 
 On my computer, the test program on a 4K image give the following for yuv2rgb:
 
