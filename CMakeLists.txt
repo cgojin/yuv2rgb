@@ -22,7 +22,9 @@ include_directories ("${PROJECT_SOURCE_DIR}")
 add_executable(test_yuv_rgb test_yuv_rgb.c yuv_rgb.c)
 
 if(USE_FFMPEG)
-target_link_libraries(test_yuv_rgb swscale)
+	find_package(PkgConfig REQUIRED)
+	pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libswscale)
+	target_link_libraries(test_yuv_rgb PkgConfig::FFMPEG)
 endif(USE_FFMPEG)
 
 if(USE_IPP)
