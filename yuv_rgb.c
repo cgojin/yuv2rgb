@@ -103,7 +103,7 @@ typedef struct
 	uint8_t cr_factor;   // [(255*CrNorm)/CrRange]
 	uint8_t g_cb_factor; // [Bf/Gf*(255*CbNorm)/CbRange]
 	uint8_t g_cr_factor; // [Rf/Gf*(255*CrNorm)/CrRange]
-	uint8_t y_factor;    // [(YMax-YMin)/255]
+	uint8_t y_factor;    // [255/(YMax-YMin)]
 	uint8_t y_offset;    // YMin
 } YUV2RGBParam;
 
